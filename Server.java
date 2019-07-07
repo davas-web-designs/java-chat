@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -71,19 +72,28 @@ class MarcoServer extends JFrame implements Runnable{
 				ip = objectRetrieved.getIp();
 				message = objectRetrieved.getMessage();
 
-				areatexto.append("\n" + nick + " : " + message + " for: " + ip);
+				if(!message.equals("online")){
 
-				Socket sendTo = new Socket(ip, 9090);
+					areatexto.append("\n" + nick + " : " + message + " for: " + ip);
 
-				ObjectOutputStream output_stream = new ObjectOutputStream(sendTo.getOutputStream());
+					Socket sendTo = new Socket(ip, 9090);
 
-				output_stream.writeObject(objectRetrieved);
+					ObjectOutputStream output_stream = new ObjectOutputStream(sendTo.getOutputStream());
 
-				output_stream.close();
+					output_stream.writeObject(objectRetrieved);
 
-				sendTo.close();
+					output_stream.close();
 
-				s.close();
+					sendTo.close();
+
+					s.close();
+				}else{
+					InetAddress address = s.getInetAddress();
+				
+					String ip_address = address.getHostAddress();
+	
+					System.out.println(ip_address + " just went online");
+				}
 			}
 
 			

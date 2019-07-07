@@ -2,6 +2,8 @@
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,7 +27,6 @@ public class Client {
 
 }
 
-
 class MarcoClient extends JFrame{
 	
 	public MarcoClient(){
@@ -37,15 +38,47 @@ class MarcoClient extends JFrame{
 		add(milamina);
 		
 		setVisible(true);
+
+		addWindowListener(new SendFlag());
 		}	
 	
+}
+
+class SendFlag extends WindowAdapter{
+
+	public void windowOpened(WindowEvent e){
+
+		try {
+			Socket s = new Socket("192.168.0.15", 9090);
+
+			SendObject data = new SendObject();
+
+			data.setMessage("online");
+
+			ObjectOutputStream output_stream = new ObjectOutputStream(s.getOutputStream());
+
+			output_stream.writeObject(data);
+
+			s.close();
+
+		} catch (Exception e1) {
+			//TODO: handle exception
+			e1.getStackTrace();
+		}
+
+	}
+
 }
 
 class LaminaMarcoClient extends JPanel implements Runnable{
 	
 	public LaminaMarcoClient(){
 
-		nick = new JTextField(5);
+		String nick_user = JOptionPane.showInputDialog("Nick: ");
+
+		nick = new JLabel();
+
+		nick.setText(nick_user);
 
 		add(nick);
 	
@@ -53,7 +86,7 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 		
 		add(texto);
 
-		ip = new JTextField(8);
+		ip = new JComboBox();
 
 		add(ip);
 
@@ -87,12 +120,12 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 
 			//System.out.println(message.getText());
 			try {
-				Socket s = new Socket("47.63.110.174", 9090);
+				Socket s = new Socket("192.168.0.15", 9090);
 
 				SendObject data = new SendObject();
 
 				data.setNick(nick.getText());
-				data.setIp(ip.getText());
+				data.setIp(ip.getSelectedItem.toString());
 				data.setMessage(message.getText());
 
 				ObjectOutputStream outputStream = new ObjectOutputStream(s.getOutputStream());
@@ -111,8 +144,12 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 		}
 	}		
 		
-	private JTextField message, nick, ip;
+	private JTextField message;
+
+	private JComboBox ip;
 	
+	private JLabel nick;
+
 	private JButton sendButton;
 
 	private JTextArea textarea;
