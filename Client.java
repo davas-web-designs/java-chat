@@ -125,7 +125,7 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 				SendObject data = new SendObject();
 
 				data.setNick(nick.getText());
-				data.setIp(ip.getSelectedItem.toString());
+				data.setIp(ip.getSelectedItem().toString());
 				data.setMessage(message.getText());
 
 				ObjectOutputStream outputStream = new ObjectOutputStream(s.getOutputStream());
