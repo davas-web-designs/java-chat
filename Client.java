@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 
 import javax.swing.*;
 
@@ -41,7 +41,7 @@ class MarcoClient extends JFrame{
 	
 }
 
-class LaminaMarcoClient extends JPanel{
+class LaminaMarcoClient extends JPanel implements Runnable{
 	
 	public LaminaMarcoClient(){
 
@@ -71,7 +71,11 @@ class LaminaMarcoClient extends JPanel{
 
 		sendButton.addActionListener(event);
 		
-		add(sendButton);	
+		add(sendButton);
+
+		Thread h = new Thread(this);
+
+		h.start();
 		
 	}
 
@@ -79,9 +83,11 @@ class LaminaMarcoClient extends JPanel{
 		
 		public void actionPerformed(ActionEvent e){
 			
+			textarea.append("\n" + message.getText());
+
 			//System.out.println(message.getText());
 			try {
-				Socket s = new Socket("192.168.0.15", 9999);
+				Socket s = new Socket("47.63.110.174", 9090);
 
 				SendObject data = new SendObject();
 
@@ -111,6 +117,31 @@ class LaminaMarcoClient extends JPanel{
 
 	private JTextArea textarea;
 	
+	public void run(){
+		try {
+			
+			ServerSocket client_server = new ServerSocket(9090);
+
+			Socket client;
+
+			SendObject objectRetrieved;
+
+			while(true){
+				client = client_server.accept();
+
+				ObjectInputStream input_stream = new ObjectInputStream(client.getInputStream());
+
+				objectRetrieved = (SendObject) input_stream.readObject();
+
+				textarea.append("\n" + objectRetrieved.getNick() + " : " + objectRetrieved.getMessage());
+			}
+
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.getMessage();
+		}
+	}
+
 }
 
 class SendObject implements Serializable{

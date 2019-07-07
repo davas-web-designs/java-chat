@@ -7,6 +7,7 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -53,7 +54,7 @@ class MarcoServer extends JFrame implements Runnable{
 		//System.out.println("Im listening");
 
 		try {
-			ServerSocket server = new ServerSocket(9999);
+			ServerSocket server = new ServerSocket(9090);
 
 			String nick, ip, message;
 
@@ -71,6 +72,16 @@ class MarcoServer extends JFrame implements Runnable{
 				message = objectRetrieved.getMessage();
 
 				areatexto.append("\n" + nick + " : " + message + " for: " + ip);
+
+				Socket sendTo = new Socket(ip, 9090);
+
+				ObjectOutputStream output_stream = new ObjectOutputStream(sendTo.getOutputStream());
+
+				output_stream.writeObject(objectRetrieved);
+
+				output_stream.close();
+
+				sendTo.close();
 
 				s.close();
 			}
