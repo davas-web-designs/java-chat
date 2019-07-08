@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -170,9 +171,22 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 
 				objectRetrieved = (SendObject) input_stream.readObject();
 
-				textarea.append("\n" + objectRetrieved.getNick() + " : " + objectRetrieved.getMessage());
-			}
+				if(!objectRetrieved.getMessage().equals("online")){
+					textarea.append("\n" + objectRetrieved.getNick() + " : " + objectRetrieved.getMessage());
+				}else{
+					ip.removeAllItems();
+					
+					ArrayList<String> ipsMenu = new ArrayList<String>();
 
+					ipsMenu = objectRetrieved.getArray();
+
+					for (String z : ipsMenu) {
+						ip.addItem(z);
+					}
+					//textarea.append("\n" + objectRetrieved.getArray());
+				}
+			}
+			
 		} catch (Exception e) {
 			//TODO: handle exception
 			e.getMessage();
@@ -183,6 +197,15 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 
 class SendObject implements Serializable{
 	private String nick, ip, message;
+	private ArrayList<String> ips;
+
+	public ArrayList<String> getArray(){
+		return ips;
+	}
+
+	public void setArray(ArrayList<String> ips){
+		this.ips = ips;
+	}
 
 	public String getNick(){
 		return nick;

@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server  {
 
@@ -59,6 +60,8 @@ class MarcoServer extends JFrame implements Runnable{
 
 			String nick, ip, message;
 
+			ArrayList <String> ipList = new ArrayList<String>();
+
 			SendObject objectRetrieved;
 
 			while(true){
@@ -93,6 +96,25 @@ class MarcoServer extends JFrame implements Runnable{
 					String ip_address = address.getHostAddress();
 	
 					System.out.println(ip_address + " just went online");
+				
+					ipList.add(ip_address);
+
+					for (String z: ipList){
+
+						Socket sendTo = new Socket(z, 9090);
+
+						ObjectOutputStream output_stream = new ObjectOutputStream(sendTo.getOutputStream());
+	
+						output_stream.writeObject(objectRetrieved);
+	
+						output_stream.close();
+	
+						sendTo.close();
+	
+						s.close();
+					}
+
+					objectRetrieved.setArray(ipList);
 				}
 			}
 
