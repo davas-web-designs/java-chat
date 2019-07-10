@@ -158,7 +158,7 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 	public void run(){
 		try {
 			
-			ServerSocket client_server = new ServerSocket(9090);
+			ServerSocket client_server = new ServerSocket(9999);
 
 			Socket client;
 
@@ -171,6 +171,8 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 
 				objectRetrieved = (SendObject) input_stream.readObject();
 
+				//System.out.println(objectRetrieved.getMessage());
+				
 				if(!objectRetrieved.getMessage().equals("online")){
 					textarea.append("\n" + objectRetrieved.getNick() + " : " + objectRetrieved.getMessage());
 				}else{
@@ -180,6 +182,8 @@ class LaminaMarcoClient extends JPanel implements Runnable{
 
 					ipsMenu = objectRetrieved.getArray();
 
+					System.out.println(objectRetrieved.getArray());
+					
 					for (String z : ipsMenu) {
 						ip.addItem(z);
 					}

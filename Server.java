@@ -90,18 +90,22 @@ class MarcoServer extends JFrame implements Runnable{
 					sendTo.close();
 
 					s.close();
-				}else{
-					InetAddress address = s.getInetAddress();
-				
+				}else{				       
+				        InetAddress address = s.getInetAddress();
+					
 					String ip_address = address.getHostAddress();
 	
 					System.out.println(ip_address + " just went online");
-				
+
 					ipList.add(ip_address);
 
+					objectRetrieved.setArray(ipList);
+					
+					System.out.println(ipList);
+					
 					for (String z: ipList){
 
-						Socket sendTo = new Socket(z, 9090);
+						Socket sendTo = new Socket(z, 9999);
 
 						ObjectOutputStream output_stream = new ObjectOutputStream(sendTo.getOutputStream());
 	
@@ -114,7 +118,7 @@ class MarcoServer extends JFrame implements Runnable{
 						s.close();
 					}
 
-					objectRetrieved.setArray(ipList);
+					
 				}
 			}
 
